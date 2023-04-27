@@ -1,4 +1,6 @@
 import numpy as np
+from tqdm import tqdm
+
 from .dataset import DataLoader
 from .optimizer import Optimizer
 from ece285.layers.sequential import Sequential
@@ -39,7 +41,7 @@ class Trainer(object):
         # self.logs = []
         training_loss = []
         eval_accuracies = []
-        for epoch in range(self.epoch):
+        for epoch in tqdm(range(self.epoch)):
             epoch_loss = []
             for batch_x, batch_y in self.dataset.train_iteration(self.batch_size):
                 output_x = self.model(batch_x)

@@ -4,6 +4,7 @@ Logistic regression model
 
 import numpy as np
 import math
+from tqdm import tqdm
 
 
 class Logistic(object):
@@ -31,7 +32,8 @@ class Logistic(object):
             the sigmoid of the input
         """
         # TODO: implement me
-        pass
+#         pass
+        return 1/(1 + np.exp(-z))
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray, weights: np.ndarray) -> np.ndarray:
         """Train the classifier.
@@ -49,6 +51,34 @@ class Logistic(object):
         self.w = weights
 
         # TODO: implement me
+        # one-hot encoding of labels
+        y_onehot = np.zeros((N, 10))
+        y_onehot[np.arange(N), y_train] = 1
+        
+        for epoch in range(self.epochs):
+            # compute softmax probabilities
+            probs = np.dot(X_train, self.w.T)
+            probs = self.sigmoid(probs)
+#             print(probs)
+
+            # compute loss and gradient
+            log_loss = -1/N * (y_onehot * np.log(probs) + (1 - y_onehot) * np.log(1 - probs))
+            print(y_onehot * np.log(probs))
+            print((1 - y_onehot) * np.log(1 - probs))
+#             l2_loss = 0.5 * self.weight_decay * np.sum(self.w[:-1] ** 2)
+            l2_loss = 0
+            
+            loss = log_loss + l2_loss
+           
+            # grad = np.dot(X_train.T, probs - y_onehot).T + self.weight_decay * self.w
+            grad = np.dot(X_train.T, probs - y_onehot).T
+            
+            # update weights
+            self.w -= self.lr * grad
+
+            # print loss every 100 iterations
+            if epoch % 100 == 0:
+                print("Epoch {}, Loss {}".format(epoch, loss))
 
         return self.w
 
@@ -65,4 +95,8 @@ class Logistic(object):
                 class.
         """
         # TODO: implement me
-        pass
+#         pass
+        y_pred = X_test.dot(self.w.T)
+        y_pred = np.argmax(y_pred, axis=1)
+
+        return y_pred

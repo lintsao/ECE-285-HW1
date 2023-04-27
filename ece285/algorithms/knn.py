@@ -38,6 +38,7 @@ class KNN(object):
         """
         # Fill this function in
         k_test = k if k is not None else self.k
+        N, D = x_test.shape
 
         if loop_count == 1:
             distance = self.calc_dis_one_loop(x_test)
@@ -45,7 +46,26 @@ class KNN(object):
             distance = self.calc_dis_two_loop(x_test)
 
         # TODO: implement me
-        pass
+        # pass
+        out = np.zeros(N)
+        M, _ = self._x_train.shape
+        
+        for i in range(N):
+            dis_class_pair = []
+            
+            for j in range(M):
+                dis_class_pair.append([distance[i][j], self._y_train[j]])
+            
+            dis_class_pair.sort()
+            class_list = []
+            
+            for n in range(k_test):
+                class_list.append(dis_class_pair[n][1])
+
+            out[i] = max(class_list, key=class_list.count)
+            
+        return out
+            
 
     def calc_dis_one_loop(self, x_test: np.ndarray):
         """
@@ -58,7 +78,18 @@ class KNN(object):
         """
 
         # TODO: implement me
-        pass
+        # pass
+        N, D = x_test.shape
+        M, _ = self._x_train.shape
+
+        distances = np.zeros((N, M)) # Initialize array to store distances
+        distances_class_list = []
+        
+        # Loop over each sample and calculate distances
+        for i in range(N):
+            distances[i] = np.linalg.norm(self._x_train - x_test[i], axis=1) # Euclidean distance
+        
+        return distances
 
     def calc_dis_two_loop(self, x_test: np.ndarray):
         """
@@ -70,4 +101,15 @@ class KNN(object):
             x_test: Test samples; np.ndarray with shape (N, D)
         """
         # TODO: implement me
-        pass
+        # pass
+        N, D = x_test.shape
+        M, _ = self._x_train.shape
+
+        distances = np.zeros((N, M)) # Initialize array to store distances
+
+        # Loop over each test sample and training sample to calculate distances
+        for i in range(N):
+            for j in range(M):
+                distances[i, j] = np.linalg.norm(x_test[i] - self._x_train[j]) # Euclidean distance
+
+        return distances

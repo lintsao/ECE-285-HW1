@@ -35,6 +35,30 @@ class Linear(object):
         self.w = weights
 
         # TODO: implement me
+        loss = 0
+        y_onehot = np.zeros((N, self.n_class))
+        y_onehot[np.arange(N), y_train] = 1
+            
+        for epoch in range(self.epochs):
+            # Calculate the predictions
+            y_pred = np.dot(X_train, self.w.T)
+#             print("y1", y_pred.shape)
+
+            # Calculate the mean squared error loss
+            mse_loss = np.mean((y_pred - y_onehot) ** 2)
+
+            # Add L2 regularization to the loss
+#             print(self.w[:, :].shape)
+#             print(self.w[:, :-1].shape)
+            l2_loss = 0.5 * self.weight_decay * np.sum(self.w ** 2)
+            loss = mse_loss + l2_loss
+
+            # Calculate the gradient of the loss with respect to the weights
+#             print(np.dot(X_train.T, y_pred - y_train).shape)
+            grad = np.dot(X_train.T, y_pred - y_onehot).T + self.weight_decay * self.w
+
+            # Update the weights using the gradient and the learning rate
+            self.w -= self.lr * grad           
 
         return self.w
 
@@ -51,4 +75,8 @@ class Linear(object):
                 class.
         """
         # TODO: implement me
-        pass
+        # pass
+        y_pred = X_test.dot(self.w.T)
+        y_pred = np.argmax(y_pred, axis=1)
+        
+        return y_pred
