@@ -57,29 +57,25 @@ class Logistic(object):
         
         for epoch in range(self.epochs):
             # compute softmax probabilities
-            probs = np.dot(X_train, self.w.T)
-            probs = self.sigmoid(probs)
+            y_pred = np.dot(X_train, self.w.T)
+            y_pred = self.sigmoid(y_pred)
 #             print(probs)
 
             # compute loss and gradient
-            log_loss = -1 / N * (y_onehot * np.log(probs) + (1 - y_onehot) * np.log(1 - probs))
-            print(y_onehot * np.log(probs))
-            print((1 - y_onehot) * np.log(1 - probs))
+            log_loss = -1 / N * np.sum(y_onehot * np.log(y_pred) + (1 - y_onehot) * np.log(1 - y_pred))
+#             print(y_onehot * np.log(y_pred))
+#             print((1 - y_onehot) * np.log(1 - y_pred))
             print(log_loss)
             l2_loss = 1 / N * 0.5 * self.weight_decay * np.sum(np.square(self.w))
             
             loss = log_loss + l2_loss
-            print(loss)
+#             print(loss)
            
             # grad = np.dot(X_train.T, probs - y_onehot).T + self.weight_decay * self.w
             grad = 1 / N * (np.dot(X_train.T, y_pred - y_onehot).T + self.weight_decay * self.w)
             
             # update weights
             self.w -= self.lr * grad
-
-            # print loss every 100 iterations
-            if epoch % 100 == 0:
-                print("Epoch {}, Loss {}".format(epoch, loss))
 
         return self.w
 

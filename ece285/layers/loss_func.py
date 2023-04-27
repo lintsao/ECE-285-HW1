@@ -38,16 +38,16 @@ class CrossEntropyLoss(BaseLayer):
         TODO: Compute gradients given the true labels
         """
         # Retrieve data from cache to calculate gradients
-        loss_temp, x_temp, y_temp = self.cache
-        N, _ = x_temp.shape
+        loss, softmax, target_y = self.cache
+        N, _ = softmax.shape
 
         # Use the formula for the gradient of Cross entropy loss to calculate the gradients
         # Gradient matrix will be NxD matrix, with N rows for all the samples in the minibatch, and D=3072
-        dx = x_temp.copy()
+        dx = softmax.copy()
 #         print(dx)
-        dx[np.arange(N), y_temp] -= 1
+        dx[np.arange(N), target_y] -= 1
 #         print(dx)
-        assert x_temp.shape == dx.shape, "Mismatch in shape"
+        assert softmax.shape == dx.shape, "Mismatch in shape"
         # Normalize the gradient by dividing with the total number of samples N
         dx /= N
         return dx
