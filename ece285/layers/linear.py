@@ -28,15 +28,15 @@ class Linear(BaseLayer):
         temp_x, temp_w, _ = self.cache
 
         # Calculate dx
-        print(dout.shape, temp_x.shape, temp_w.shape) # (10, 3) (10, 10) (10, 3)
+#         print(dout.shape, temp_x.shape, temp_w.shape) # (10, 3) (10, 10) (10, 3)
         dx = np.dot(dout, temp_w.T)
-        print("dx", dx.shape)
+#         print("dx", dx.shape)
         
         # Calculate dw and db
         self.dw = np.dot(temp_x.T, dout)
-        print("dw", self.dw.shape)
+#         print("dw", self.dw.shape)
         self.db = np.sum(dout, axis=0)
-        print("db", self.db.shape)
+#         print("db", self.db.shape)
 
         # Return gradient for passing to the next layers
         return dx

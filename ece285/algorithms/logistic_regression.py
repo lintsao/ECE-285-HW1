@@ -62,16 +62,17 @@ class Logistic(object):
 #             print(probs)
 
             # compute loss and gradient
-            log_loss = -1/N * (y_onehot * np.log(probs) + (1 - y_onehot) * np.log(1 - probs))
+            log_loss = -1 / N * (y_onehot * np.log(probs) + (1 - y_onehot) * np.log(1 - probs))
             print(y_onehot * np.log(probs))
             print((1 - y_onehot) * np.log(1 - probs))
-#             l2_loss = 0.5 * self.weight_decay * np.sum(self.w[:-1] ** 2)
-            l2_loss = 0
+            print(log_loss)
+            l2_loss = 1 / N * 0.5 * self.weight_decay * np.sum(np.square(self.w))
             
             loss = log_loss + l2_loss
+            print(loss)
            
             # grad = np.dot(X_train.T, probs - y_onehot).T + self.weight_decay * self.w
-            grad = np.dot(X_train.T, probs - y_onehot).T
+            grad = 1 / N * (np.dot(X_train.T, y_pred - y_onehot).T + self.weight_decay * self.w)
             
             # update weights
             self.w -= self.lr * grad
