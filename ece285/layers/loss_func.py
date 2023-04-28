@@ -16,20 +16,12 @@ class CrossEntropyLoss(BaseLayer):
         # Calculate the sum of losses for each example, loss for one example -log(e_i/sum(e_j)) where i is the
         # correct class according to the label target_y and j is sum over all classes
         # Compute the softmax of the input values
-        exp_input = np.exp(input_x)
-        softmax = exp_input / np.sum(exp_input, axis=1, keepdims=True)
 
         # Compute the negative log probability of the correct class
-#         print("softmax", softmax)
-#         print("target_y", target_y)
-#         print(softmax[np.arange(N), target_y])
-        loss = -np.sum(np.log(softmax[np.arange(N), target_y]))
-
-        # Normalize the loss by dividing by the total number of samples N
-        loss /= N
+        loss = - 1 / N * np.sum(np.log(input_x[np.arange(N), target_y]))
 
         # Store your loss output and input and targets in cache
-        self.cache = [loss, softmax, target_y]
+        self.cache = [loss, input_x, target_y]
 
         return loss
 
@@ -38,18 +30,17 @@ class CrossEntropyLoss(BaseLayer):
         TODO: Compute gradients given the true labels
         """
         # Retrieve data from cache to calculate gradients
-        loss, softmax, target_y = self.cache
-        N, _ = softmax.shape
+        loss, input_x, target_y = self.cache
+        N, _ = input_x.shape
 
         # Use the formula for the gradient of Cross entropy loss to calculate the gradients
         # Gradient matrix will be NxD matrix, with N rows for all the samples in the minibatch, and D=3072
-        dx = softmax.copy()
-#         print(dx)
+        dx = input_x.copy()
         dx[np.arange(N), target_y] -= 1
-#         print(dx)
-        assert softmax.shape == dx.shape, "Mismatch in shape"
+        assert input_x.shape == dx.shape, "Mismatch in shape"
         # Normalize the gradient by dividing with the total number of samples N
         dx /= N
+        
         return dx
 
     def zero_grad(self):

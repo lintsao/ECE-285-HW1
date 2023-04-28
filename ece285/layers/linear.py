@@ -18,7 +18,7 @@ class Linear(BaseLayer):
         # output =
         # Store the arrays in cache, useful for calculating the gradients in the backward pass
         self.cache = [input_x.copy(), self.w.copy(), self.b.copy()]
-#         print(input_x.shape, self.w.shape, self.b.shape) # (10, 10) (10, 3) (3,)
+        # print(input_x.shape, self.w.shape, self.b.shape) # (10, 10) (10, 3) (3,)
         output = np.dot(input_x, self.w) + self.b # (3,)
         return output
 
@@ -27,18 +27,14 @@ class Linear(BaseLayer):
         # dw and dx can be estimated from the incoming gradient dout, using chain rule as discussed in class
         temp_x, temp_w, _ = self.cache
         N, D = temp_x.shape
-        print(N, D)
 
         # Calculate dx
-#         print(dout.shape, temp_x.shape, temp_w.shape) # (10, 3) (10, 10) (10, 3)
+        # print(dout.shape, temp_x.shape, temp_w.shape) # (10, 3) (10, 10) (10, 3)
         dx = np.dot(dout, temp_w.T)
-#         print("dx", dx.shape)
         
         # Calculate dw and db
         self.dw = np.dot(temp_x.T, dout)
-#         print("dw", self.dw.shape)
         self.db = np.sum(dout, axis=0)
-#         print("db", self.db.shape)
 
         # Return gradient for passing to the next layers
         return dx

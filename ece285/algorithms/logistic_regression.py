@@ -32,7 +32,7 @@ class Logistic(object):
             the sigmoid of the input
         """
         # TODO: implement me
-#         pass
+        # pass
         return 1/(1 + np.exp(-z))
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray, weights: np.ndarray) -> np.ndarray:
@@ -59,19 +59,13 @@ class Logistic(object):
             # compute softmax probabilities
             y_pred = np.dot(X_train, self.w.T)
             y_pred = self.sigmoid(y_pred)
-#             print(probs)
 
             # compute loss and gradient
             log_loss = -1 / N * np.sum(y_onehot * np.log(y_pred) + (1 - y_onehot) * np.log(1 - y_pred))
-#             print(y_onehot * np.log(y_pred))
-#             print((1 - y_onehot) * np.log(1 - y_pred))
-            print(log_loss)
             l2_loss = 1 / N * 0.5 * self.weight_decay * np.sum(np.square(self.w))
             
             loss = log_loss + l2_loss
-#             print(loss)
            
-            # grad = np.dot(X_train.T, probs - y_onehot).T + self.weight_decay * self.w
             grad = 1 / N * (np.dot(X_train.T, y_pred - y_onehot).T + self.weight_decay * self.w)
             
             # update weights
@@ -92,8 +86,8 @@ class Logistic(object):
                 class.
         """
         # TODO: implement me
-#         pass
-        y_pred = X_test.dot(self.w.T)
+        # pass
+        y_pred = np.dot(X_test, self.w.T)
         y_pred = np.argmax(y_pred, axis=1)
 
         return y_pred
